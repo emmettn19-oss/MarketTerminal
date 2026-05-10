@@ -36,7 +36,7 @@ function Sparkline({ gameId, height }) {
   const h = height || 48;
   useEffect(() => {
     if (Platform.OS !== 'web') return;
-    fetch('http://localhost:5001/games/' + gameId + '/history')
+    fetch('https://marketterminal-production.up.railway.app/games/' + gameId + '/history')
       .then(r => r.json())
       .then(data => {
         if (!data || data.length < 2) { setStatus('waiting'); return; }
@@ -155,7 +155,7 @@ export default function FeedScreen() {
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetch('http://localhost:5001/games')
+    fetch('https://marketterminal-production.up.railway.app/games')
       .then(r => r.json())
       .then(data => { setGames(data.map(mapGame)); setLoading(false); })
       .catch(e => { console.error(e); setLoading(false); });
