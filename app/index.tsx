@@ -76,14 +76,17 @@ function Sparkline({ gameId, height }) {
 function DivBar({ label, model, fair, edge }) {
   if (model == null) return null;
   const ec = edge == null ? '#52525b' : edge > 0 ? '#16a34a' : '#dc2626';
-  const modelW = (model * 100).toFixed(2) + '%';
-  const fairW = fair != null ? (fair * 100).toFixed(2) + '%' : null;
+  const modelPct = model * 100;
+  const fairPct = fair != null ? fair * 100 : null;
+  const baseW = fairPct != null ? Math.min(modelPct, fairPct).toFixed(2) + '%' : modelPct.toFixed(2) + '%';
+  const divLeft = fairPct != null ? Math.min(modelPct, fairPct).toFixed(2) + '%' : '0%';
+  const divW = fairPct != null ? Math.abs(modelPct - fairPct).toFixed(2) + '%' : '0%';
   return (
     <View style={s.divRow}>
       <Text style={[s.divLabel, MONO]}>{label}</Text>
       <View style={s.divTrack}>
-        {fairW ? <View style={[s.divBarImp, { width: fairW }]} /> : null}
-        <View style={[s.divBarModel, { width: modelW, backgroundColor: ec }]} />
+        <View style={[s.divBarBase, { width: baseW }]} />
+        {fairPct != null && <View style={[s.divBarEdge, { left: divLeft, width: divW, backgroundColor: ec }]} />}
       </View>
       <Text style={[s.divPct, MONO, { color: edge == null ? '#52525b' : ec }]}>
         {edge == null ? 'no odds' : fmtEdge(edge)}
@@ -211,8 +214,8 @@ const s = StyleSheet.create({
   divRow: { flexDirection:'row', alignItems:'center', gap:8, marginBottom:4 },
   divLabel: { color:'#52525b', fontSize:8, letterSpacing:1, width:28 },
   divTrack: { flex:1, height:4, backgroundColor:'|27272a', borderRadius:2, position:'relative', overflow:'hidden' },
-  divBarImp: { position:'absolute', left:0, top:0, height:4, backgroundColor:'rgba(156,163,175,0.25)', borderRadius:2 },
-  divBarModel: { position:'absolute', left:0, top:0, height:4, borderRadius:2 },
+  divBarBase: { position:'absolute', left:0, top:0, height:4, backgroundColor:'rgba(156,163,175,0.25)', borderRadius:2 },
+  divBarEdge: { position:'absolute', top:0, height:4, borderRadius:2 },
   divPct: { fontSize:9, fontWeight:'600', width:46, textAlign:'right' },
   sparkContainer: { paddingHorizontal:14, paddingBottom:12, borderTopWidth:1, borderTopColor:'rgba(255,255,255,0.04)' },
   sparkHeader: { flexDirection:'row', justifyContent:'space-between', marginBottom:8, marginTop:10 },
